@@ -3,12 +3,12 @@ from Game import Game
 from Question import Question
 from random import choice
 
-# Games
+# *************** Games ***************
 sci_fi_games = (
     Game("No Man's Sky", 2016, 8.1, 9.0, "PS4", True),
     Game("Kerb's Space Program", 2013, 7.7, 9.3, ["PS4", "XBOX ONE"], False),
     Game("Mass Effect", 2016, 8.1, 9.0, ["PS4", "XBOX ONE"], True),
-    Game("X-COM", 2016, 8.1, 9.0, ["PS4", "XBOX ONE"], False),
+    Game("X-COM", 2016, 8.1, 9.0, "XBOX ONE", False),
 )
 adventure_games = (
     Game("Uncharted 4", 2016, 9.2, 9.6, ["PS4", "Nintendo Switch"], False),
@@ -30,37 +30,7 @@ action_games = (
     Game("UFC", 2016, 8.1, 9.0, ["PS4", "XBOX ONE", "Nintendo Switch", "PS Vita"], False),
 )
 
-# questions_answers = {
-#     0: {
-#         "What kind of games do you like?\n (a) Sci-fi\n (b) Adventure\n (c) Horror\n (d) Action\n",
-#         {
-#             "a": "sci-fi",
-#             "b": "adventure",
-#             "c": "horror",
-#             "d": "action"
-#         }
-#     },
-#     1: {
-#         "What systems do you have?\n (a) PS4\n (b) Nintendo Switch\n (c) XBOX ONE\n (d) PS Vita\n",
-#         {
-#             "a": "PS4",
-#             "b": "XBOX ONE",
-#             "c": "Nintendo Switch",
-#             "d": "PS Vita",
-#         }
-#     },
-#     2: {
-#         "How many hours a week do you play games?\n (a) 0-2\n (b) 3-5\n (c) 6-8\n (d) 9+\n",
-#         {
-#             "a": "0-2",
-#             "b": "3-5",
-#             "c": "6-8",
-#             "d": "9+",
-#         }
-#     }
-# }
-
-# Lists and Questions
+# *************** Questions ***************
 questions_group1 = [
     Question("What kind of games do you like?\n (a) Sci-fi\n (b) Adventure\n (c) Horror\n (d) Action\n", 0),
     Question("What systems do you have?\n (a) PS4\n (b) Nintendo Switch\n (c) XBOX ONE\n (d) PS Vita\n", 1),
@@ -68,8 +38,9 @@ questions_group1 = [
 ]
 
 
-# Functions
+# *************** Functions ***************
 
+# ***** Ask questions *****
 def survey_questions(questions):
     answers = []
     for question in questions:
@@ -80,7 +51,7 @@ def survey_questions(questions):
             if answer.lower() == "a":
                 answer = "sci-fi"
             elif answer.lower() == "b":
-                answer == "adventure"
+                answer = "adventure"
             elif answer.lower() == "c":
                 answer = "horror"
             else:
@@ -107,21 +78,35 @@ def survey_questions(questions):
     return answers
 
 
+# ***** Filter Genre, Then Get Randomized Recommendation *****
 def game_generator(user_answers):
     if user_answers[0] == "sci-fi":
-        recommend_game = choice(sci_fi_games)
-        return recommend_game.title
+        recommend_game = game_filter(sci_fi_games, user_answers[1])
+        return recommend_game
     elif user_answers[0] == "adventure":
-        recommend_game = choice(adventure_games)
-        return recommend_game.title
+        recommend_game = game_filter(adventure_games, user_answers[1])
+        return recommend_game
     elif user_answers[0] == "horror":
-        recommend_game = choice(horror_games)
-        return recommend_game.title
+        recommend_game = game_filter(horror_games, user_answers[1])
+        return recommend_game
     else:
-        recommend_game = choice(action_games)
-        return recommend_game.title
+        recommend_game = game_filter(action_games, user_answers[1])
+        return recommend_game
 
 
+# ***** Filter Console *****
+def game_filter(genre, answer):
+    def console_filter(games, console):
+        game_selection = []
+        for game in games:
+            if console in game.consoles:
+                game_selection.append(game)
+        return game_selection
+    recommended_game = choice(console_filter(genre, answer))
+    return recommended_game.title
+
+
+# ***** Base App Function; Ask questions, generate recommended game *****
 def run_survey(questions_group):
     user_answers = survey_questions(questions_group)
     recommend_game = game_generator(user_answers)
