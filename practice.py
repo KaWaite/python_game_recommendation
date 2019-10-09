@@ -45,7 +45,7 @@ def survey_questions(questions):
     answers = []
     for question in questions:
         answer = input(question.prompt)
-        while answer.lower() not in "abcd":
+        while answer.lower() not in ("a", "b", "c", "d"):
             answer = input("I'm sorry, that is invalid. Please try again: ")
         if question.key == 0:
             if answer.lower() == "a":
